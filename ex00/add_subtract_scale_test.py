@@ -6,7 +6,16 @@ sys.path.append(os.path.dirname(SCRIPT_DIR))
 from classes.vector import Vector
 
 
-mul = Vector([1, 1.])
-v = Vector([3., 6.])
-v.add(mul)
-print(v)
+u = Vector([2., 3.])
+v = Vector([5., 7.])
+u.add(v)
+print(u)
+
+u = Vector([2., 3.])
+v = Vector([5., 7.])
+u.sub(v)
+print(u)
+
+u = Vector([2., 3.])
+u.scl(2.)
+print(u)

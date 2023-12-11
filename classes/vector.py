@@ -14,9 +14,20 @@ class Vector:
     def __str__(self) -> str:
         return str(self.data)
 
-    def add(self, v: 'Vector'):
+    def add(self, v: 'Vector') -> 'Vector':
         assert len(self.data) == len(v.data), \
             "Cannot add vectors of different size."
 
         self.data = [a + b for a, b in zip(self.data, v.data)]
+        return self
+
+    def sub(self, v: 'Vector') -> 'Vector':
+        assert len(self.data) == len(v.data), \
+            "Cannot subtract vectors of different size."
+
+        self.data = [a - b for a, b in zip(self.data, v.data)]
+        return self
+
+    def scl(self, k: float) -> 'Vector':
+        self.data = [a * k for a in self.data]
         return self
