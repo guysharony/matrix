@@ -79,3 +79,13 @@ class Vector:
         """
         self.data = [a * k for a in self.data]
         return self
+
+    def dot(self, v: 'Vector') -> float:
+        assert self.length == v.length, \
+            "Cannot subtract vectors of different size."
+
+        res = 0
+        for a, b in zip(self.data, v.data):
+            res += a * b
+
+        return res
