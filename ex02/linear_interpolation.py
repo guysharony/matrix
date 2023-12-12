@@ -2,7 +2,7 @@ from typing import Union
 from classes.matrix import Matrix
 from classes.vector import Vector
 
-def lerp(u: Union[float, Vector, Matrix], v: Union[float, Vector, Matrix], t: float):
+def lerp(u: Union[float, Vector, Matrix], v: Union[float, Vector, Matrix], t: float) -> Union[float, Vector, Matrix]:
     if t < 0 or t > 1:
         raise ValueError("Scaler must be between 0 and 1")
 
