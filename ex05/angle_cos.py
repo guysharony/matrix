@@ -11,4 +11,10 @@ def angle_cos(u: Vector, v: Vector) -> float:
     Returns:
         float: Cosine similarity between the input vectors.
     """
+    if all(value == 0 for value in v.data) or all(value == 0 for value in u.data):
+        raise ValueError("A vector cannot be null.")
+
+    if u.length != v.length:
+        raise ValueError("Vectors must have the same size.")
+
     return round(u.dot(v) / (u.norm() * v.norm()), 8)
