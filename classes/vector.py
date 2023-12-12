@@ -114,7 +114,7 @@ class Vector:
             float: The L2 norm.
         """
 
-        res = 0
+        res = 0.0
         for x in self.data:
             res += pow(x, 2)
 
