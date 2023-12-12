@@ -89,3 +89,44 @@ class Vector:
             res += a * b
 
         return res
+
+    def norm_1(self) -> float:
+        """
+        The Manhattan norm (L1 norm), is a way to measure the magnitude or size of a vector in a vector space.
+        It is calculated by summing the absolute values of the components of the vector.
+
+        Returns:
+            float: The L1 norm.
+        """
+        res = 0
+
+        for x in self.data:
+            res += abs(x)
+
+        return res
+
+    def norm(self) -> float:
+        """
+        The Euclidean norm (L2 norm), is a way to measure the magnitude or size of a vector in a vector space.
+        It calculates the length of a vector using a square root of the sum of the squares of its individual components.
+
+        Returns:
+            float: The L2 norm.
+        """
+
+        res = 0
+        for x in self.data:
+            res += pow(x, 2)
+
+        return res ** 0.5
+
+    def norm_inf(self) -> float:
+        """
+        The supremum norm (L∞ norm) is a way to measure the magnitude or size of a vector in a vector space.
+        It calculates the maximum absolute value among the components of a vector.
+
+        Returns:
+            float: The L∞ norm.
+        """
+
+        return max([abs(x) for x in self.data])
