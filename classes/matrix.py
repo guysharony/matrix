@@ -1,3 +1,6 @@
+from classes.vector import Vector
+
+
 class Matrix:
     """
     A class to represent a matrix.
@@ -78,5 +81,14 @@ class Matrix:
         Returns:
             Matrix: This matrix after scaling.
         """
-        self.data = [[x * k for x in a] for a in self.data]
+        self.data = [[x * k for x in row] for row in self.data]
         return self
+
+    def mul_vec(self, vec: 'Vector') -> 'Vector':
+        res = [0] * vec.length
+
+        for i, row in enumerate(self.data):
+            for a, b in zip(row, vec.data):
+                res[i] += a * b
+
+        return Vector(res)
