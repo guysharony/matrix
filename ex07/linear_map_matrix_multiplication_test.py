@@ -41,7 +41,7 @@ v = Matrix([
     [1., 0.],
     [0., 1.]
 ])
-#print(u.mul_mat(v))
+print(u.mul_mat(v))
 # [1., 0.]
 # [0., 1.]
 
@@ -53,7 +53,7 @@ v = Matrix([
     [2., 1.],
     [4., 2.]
 ])
-#print(u.mul_mat(v))
+print(u.mul_mat(v))
 # [2., 1.]
 # [4., 2.]
 
@@ -65,6 +65,6 @@ v = Matrix([
     [2., 1.],
     [4., 2.]
 ])
-#print(u.mul_mat(v))
+print(u.mul_mat(v))
 # [-14., -7.]
 # [44., 22.]

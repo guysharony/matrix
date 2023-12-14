@@ -12,14 +12,14 @@ class Vector:
         """
 
         try:
-            assert data.__class__ == list, \
-                "vector data must be of type list"
+            if data.__class__ != list:
+                raise ValueError("Vector data must be of type list")
 
-            assert len(data) != 0, \
-                "vector cannot be empty"
+            if len(data) == 0:
+                raise ValueError("Vector cannot be empty")
 
-            assert all(x.__class__ in (int, float) for x in data), \
-                "All elements in vector must be of type int or float"
+            if not all(x.__class__ in (int, float) for x in data):
+                raise ValueError("Vector elements must be of type int or float")
 
             self.data = data
             self.length = len(data)
@@ -33,6 +33,7 @@ class Vector:
         Returns:
             str: A string representation of the vector.
         """
+
         return str(self.data)
 
     def add(self, v: 'Vector') -> 'Vector':
@@ -45,8 +46,9 @@ class Vector:
         Returns:
             Vector: This vector after addition.
         """
-        assert self.length == v.length, \
-            "Cannot add vectors of different size."
+
+        if self.length != v.length:
+            raise ValueError("Vectors must have the same length for addition.")
 
         self.data = [a + b for a, b in zip(self.data, v.data)]
         return self
@@ -61,8 +63,9 @@ class Vector:
         Returns:
             Vector: This vector after subtraction.
         """
-        assert self.length == v.length, \
-            "Cannot subtract vectors of different size."
+
+        if self.length != v.length:
+            raise ValueError("Vectors must have the same length for subtraction.")
 
         self.data = [a - b for a, b in zip(self.data, v.data)]
         return self
@@ -77,18 +80,29 @@ class Vector:
         Returns:
             Vector: This vector after scaling.
         """
+
         self.data = [a * k for a in self.data]
         return self
 
     def dot(self, v: 'Vector') -> float:
-        assert self.length == v.length, \
-            "Cannot subtract vectors of different size."
+        """
+        Computes the dot product of two vectors.
 
-        res = 0
+        Args:
+            v (Vector): The second Vector to perform the dot product.
+
+        Returns:
+            float: The dot product value.
+        """
+
+        if self.length != v.length:
+            raise ValueError("Vectors must have the same length for dot product.")
+
+        result = 0
         for a, b in zip(self.data, v.data):
-            res += a * b
+            result += a * b
 
-        return res
+        return result
 
     def norm_1(self) -> float:
         """
@@ -98,12 +112,12 @@ class Vector:
         Returns:
             float: The L1 norm.
         """
-        res = 0
 
+        result = 0
         for x in self.data:
-            res += abs(x)
+            result += abs(x)
 
-        return res
+        return result
 
     def norm(self) -> float:
         """
@@ -114,11 +128,11 @@ class Vector:
             float: The L2 norm.
         """
 
-        res = 0.0
+        result = 0
         for x in self.data:
-            res += pow(x, 2)
+            result += pow(x, 2)
 
-        return res ** 0.5
+        return result ** 0
 
     def norm_inf(self) -> float:
         """

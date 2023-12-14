@@ -15,14 +15,14 @@ class Matrix:
         """
 
         try:
-            assert data.__class__ == list, \
-                "matrix data must be of type list of list"
+            if data.__class__ != list:
+                raise ValueError("Matrix values must be of type list of list")
 
-            assert all(len(row) == len(data[0]) for row in data), \
-                "matrix rows must be the same size"
+            if not all(len(row) == len(data[0]) for row in data):
+                raise ValueError("Matrix rows must be the same size.")
 
-            assert all(all(value.__class__ in (float, int) for value in row) for row in data), \
-                "matrix values must be of type float or int"
+            if not all(all(value.__class__ in (float, int) for value in row) for row in data):
+                raise ValueError("Matrix values must be of type float or int")
 
             self.data = data
             self.rows = len(data)
@@ -37,6 +37,7 @@ class Matrix:
         Returns:
             str: A string representation of the matrix.
         """
+
         return str(self.data)
 
     def add(self, v: 'Matrix') -> 'Matrix':
@@ -49,8 +50,9 @@ class Matrix:
         Returns:
             Matrix: This matrix after addition.
         """
-        assert self.rows == v.rows and self.columns == v.columns, \
-            "Cannot add matrixs of different size."
+
+        if self.rows != v.rows or self.columns != v.columns:
+            raise ValueError("Matrices must have the same dimensions for addition.")
 
         self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self.data, v.data)]
         return self
@@ -65,8 +67,9 @@ class Matrix:
         Returns:
             Matrix: This matrix after subtraction.
         """
-        assert self.rows == v.rows and self.columns == v.columns, \
-            "Cannot subtract matrixs of different size."
+
+        if self.rows != v.rows or self.columns != v.columns:
+            raise ValueError("Matrices must have the same dimensions for subtraction.")
 
         self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self.data, v.data)]
         return self
@@ -81,14 +84,50 @@ class Matrix:
         Returns:
             Matrix: This matrix after scaling.
         """
+
         self.data = [[x * k for x in row] for row in self.data]
         return self
 
     def mul_vec(self, vec: 'Vector') -> 'Vector':
-        res = [0] * vec.length
+        """
+        Multiplies the matrix by a vector.
 
-        for i, row in enumerate(self.data):
-            for a, b in zip(row, vec.data):
-                res[i] += a * b
+        Args:
+            vec (Vector): The vector to be multiplied with the matrix.
 
-        return Vector(res)
+        Returns:
+            Vector: A new Vector resulting from the matrix-vector multiplication.
+        """
+
+        if self.columns == vec.length:
+            raise ValueError("Matrix columns must match vector length for multiplication.")
+
+        result = [0] * vec.length
+
+        for n in range(self.columns):
+            for m in range(self.rows):
+                result[m] += self.data[m][n] * vec.data[n]
+
+        return Vector(result)
+
+    def mul_mat(self, mat: 'Matrix') -> 'Matrix':
+        """
+        Multiplies two matrices.
+
+        Args:
+            mat (Matrix): The matrix to be multiplied with the matrix.
+
+        Returns:
+            Matrix: A new Matrix resulting from the matrix multiplication.
+        """
+
+        if self.columns != mat.rows:
+            raise ValueError("Matrix A columns must match Matrix B rows for multiplication.")
+
+        result = [[0] * mat.columns for _ in range(self.rows)]
+        for n in range(self.columns):
+            for m in range(self.rows):
+                for p in range(mat.columns):
+                    result[m][p] += self.data[m][n] * mat.data[n][p]
+
+        return Matrix(result)
