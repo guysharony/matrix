@@ -148,3 +148,18 @@ class Matrix:
             result += self.data[n][n]
 
         return result
+
+    def transpose(self) -> 'Matrix':
+        """
+        Computes the transpose of the matrix.
+
+        Returns:
+            Matrix: The transpose of the original matrix.
+        """
+
+        result = [[0] * self.rows for _ in range(self.columns)]
+        for n in range(self.columns):
+            for m in range(self.rows):
+                result[n][m] = self.data[m][n]
+
+        return Matrix(result)
