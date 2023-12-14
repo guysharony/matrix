@@ -99,7 +99,7 @@ class Matrix:
             Vector: A new Vector resulting from the matrix-vector multiplication.
         """
 
-        if self.columns == vec.length:
+        if self.columns != vec.length:
             raise ValueError("Matrix columns must match vector length for multiplication.")
 
         result = [0] * vec.length
@@ -131,3 +131,20 @@ class Matrix:
                     result[m][p] += self.data[m][n] * mat.data[n][p]
 
         return Matrix(result)
+
+    def trace(self) -> float:
+        """
+        Computes the trace of a square matrix.
+    
+        Returns:
+            float: The trace value.
+        """
+
+        if self.columns != self.rows:
+            raise ValueError("The matrix must be square to compute the trace.")
+
+        result = 0
+        for n in range(self.rows):
+            result += self.data[n][n]
+
+        return result
