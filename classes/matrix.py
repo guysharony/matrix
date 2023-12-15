@@ -1,20 +1,6 @@
 from classes.vector import Vector
 
 
-def custom_deepcopy(original):
-    if not isinstance(original, list):
-        return original  # If it's not a list, return the element itself (base case)
-
-    copied_list = []  # Create an empty list for the copy
-
-    for item in original:
-        if isinstance(item, list):
-            copied_list.append(custom_deepcopy(item))  # Recursively copy nested lists
-        else:
-            copied_list.append(item)  # Copy non-list elements
-
-    return copied_list
-
 class Matrix:
     """
     A class to represent a matrix.
