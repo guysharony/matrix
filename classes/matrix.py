@@ -201,3 +201,6 @@ class Matrix:
 
             lead += 1
         return Matrix(matrix)
+
+    def determinant(self) -> float:
+        
