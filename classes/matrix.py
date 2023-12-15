@@ -1,6 +1,20 @@
 from classes.vector import Vector
 
 
+def custom_deepcopy(original):
+    if not isinstance(original, list):
+        return original  # If it's not a list, return the element itself (base case)
+
+    copied_list = []  # Create an empty list for the copy
+
+    for item in original:
+        if isinstance(item, list):
+            copied_list.append(custom_deepcopy(item))  # Recursively copy nested lists
+        else:
+            copied_list.append(item)  # Copy non-list elements
+
+    return copied_list
+
 class Matrix:
     """
     A class to represent a matrix.
@@ -163,3 +177,34 @@ class Matrix:
                 result[n][m] = self.data[m][n]
 
         return Matrix(result)
+
+    def row_echelon(self) -> 'Matrix':
+        row_echelon_matrix = self.data.copy()
+
+        lead = 0
+        for r in range(self.rows):
+            if lead >= self.columns:
+                break
+
+            pivot = r
+            while row_echelon_matrix[pivot][lead] == 0:
+                pivot += 1
+                if pivot == self.rows:
+                    pivot = r
+                    lead += 1
+                    if self.columns == lead:
+                        return Matrix(row_echelon_matrix)
+
+            row_echelon_matrix[pivot], row_echelon_matrix[r] = row_echelon_matrix[r], row_echelon_matrix[pivot]
+
+            if row_echelon_matrix[r][lead] != 0:
+                reciprocal = 1.0 / row_echelon_matrix[r][lead]
+                row_echelon_matrix[r] = [elem * reciprocal for elem in row_echelon_matrix[r]]
+
+            for i in range(self.rows):
+                if i != r:
+                    factor = row_echelon_matrix[i][lead]
+                    row_echelon_matrix[i] = [elem - factor * row_echelon_matrix[r][idx] for idx, elem in enumerate(row_echelon_matrix[i])]
+
+            lead += 1
+        return Matrix(row_echelon_matrix)
