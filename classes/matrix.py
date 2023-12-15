@@ -165,7 +165,14 @@ class Matrix:
         return Matrix(result)
 
     def row_echelon(self) -> 'Matrix':
-        row_echelon_matrix = self.data.copy()
+        """
+        Compute the row echelon form of a matrix.
+
+        Returns:
+            Matrix: The row echelon form of the matrix.
+        """
+
+        matrix = self.data.copy()
 
         lead = 0
         for r in range(self.rows):
@@ -173,24 +180,24 @@ class Matrix:
                 break
 
             pivot = r
-            while row_echelon_matrix[pivot][lead] == 0:
+            while matrix[pivot][lead] == 0:
                 pivot += 1
                 if pivot == self.rows:
                     pivot = r
                     lead += 1
                     if self.columns == lead:
-                        return Matrix(row_echelon_matrix)
+                        return Matrix(matrix)
 
-            row_echelon_matrix[pivot], row_echelon_matrix[r] = row_echelon_matrix[r], row_echelon_matrix[pivot]
+            matrix[pivot], matrix[r] = matrix[r], matrix[pivot]
 
-            if row_echelon_matrix[r][lead] != 0:
-                reciprocal = 1.0 / row_echelon_matrix[r][lead]
-                row_echelon_matrix[r] = [elem * reciprocal for elem in row_echelon_matrix[r]]
+            if matrix[r][lead] != 0:
+                reciprocal = 1.0 / matrix[r][lead]
+                matrix[r] = [elem * reciprocal for elem in matrix[r]]
 
             for i in range(self.rows):
                 if i != r:
-                    factor = row_echelon_matrix[i][lead]
-                    row_echelon_matrix[i] = [elem - factor * row_echelon_matrix[r][idx] for idx, elem in enumerate(row_echelon_matrix[i])]
+                    factor = matrix[i][lead]
+                    matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
 
             lead += 1
-        return Matrix(row_echelon_matrix)
+        return Matrix(matrix)
