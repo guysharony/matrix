@@ -298,4 +298,42 @@ class Matrix:
         return determinant_functions[self.rows](self.data)
 
     def inverse(self) -> 'Matrix':
-        return Matrix()
+        """
+        Compute the inverse of a square matrix.
+
+        Returns:
+            Matrix: The inverse matrix.
+        """
+
+        if self.rows != self.columns:
+            raise ValueError("The matrix must be square to compute the determinant.")
+
+        matrix = [row[:] + [int(i == j) for j in range(self.rows)] for i, row in enumerate(self.data)]
+
+        lead = 0
+        for r in range(self.rows):
+            if lead >= self.columns:
+                break
+
+            pivot = r
+            while matrix[pivot][lead] == 0:
+                pivot += 1
+                if pivot == self.rows:
+                    pivot = r
+                    lead += 1
+                    if self.columns == lead:
+                        return Matrix([row[self.rows:] for row in matrix])
+
+            matrix[pivot], matrix[r] = matrix[r], matrix[pivot]
+
+            if matrix[r][lead] != 0:
+                reciprocal = 1.0 / matrix[r][lead]
+                matrix[r] = [elem * reciprocal for elem in matrix[r]]
+
+            for i in range(self.rows):
+                if i != r:
+                    factor = matrix[i][lead]
+                    matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
+
+            lead += 1
+        return Matrix([row[self.rows:] for row in matrix])
