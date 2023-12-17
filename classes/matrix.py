@@ -203,4 +203,96 @@ class Matrix:
         return Matrix(matrix)
 
     def determinant(self) -> float:
-        
+        """
+        Compute the determinant of a square matrix.
+
+        Returns:
+            float: Determinant of the square matrix.
+        """
+
+        def two_by_two(matrix) -> float:
+            """
+            Computes determinant for a 2x2 matrix
+
+            Args:
+                matrix (list[list[float]]): The matrix to compute the determinant for.
+
+            Returns:
+                float: Determinant of the 2x2 matrix.
+            """
+
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0]
+
+        def three_by_three(matrix):
+            """
+            Computes determinant for a 3x3 matrix
+
+            Args:
+                matrix (list[list[float]]): The matrix to compute the determinant for.
+
+            Returns:
+                float: Determinant of the 3x3 matrix.
+            """
+
+            return (
+                matrix[0][0] * two_by_two([
+                    [matrix[1][1], matrix[1][2]],
+                    [matrix[2][1], matrix[2][2]]
+                ])
+                - matrix[0][1] * two_by_two([
+                    [matrix[1][0], matrix[1][2]],
+                    [matrix[2][0], matrix[2][2]]
+                ])
+                + matrix[0][2] * two_by_two([
+                    [matrix[1][0], matrix[1][1]],
+                    [matrix[2][0], matrix[2][1]]
+                ])
+            )
+
+        def four_by_four(matrix) -> float:
+            """
+            Computes determinant for a 4x4 matrix
+
+            Args:
+                matrix (list[list[float]]): The matrix to compute the determinant for.
+
+            Returns:
+                float: Determinant of the 4x4 matrix.
+            """
+
+            return (
+                matrix[0][0] * three_by_three([
+                    [matrix[1][1], matrix[1][2], matrix[1][3]],
+                    [matrix[2][1], matrix[2][2], matrix[2][3]],
+                    [matrix[3][1], matrix[3][2], matrix[3][3]]
+                ])
+                - matrix[0][1] * three_by_three([
+                    [matrix[1][0], matrix[1][2], matrix[1][3]],
+                    [matrix[2][0], matrix[2][2], matrix[2][3]],
+                    [matrix[3][0], matrix[3][2], matrix[3][3]]
+                ])
+                + matrix[0][2] * three_by_three([
+                    [matrix[1][0], matrix[1][1], matrix[1][3]],
+                    [matrix[2][0], matrix[2][1], matrix[2][3]],
+                    [matrix[3][0], matrix[3][1], matrix[3][3]]
+                ])
+                - matrix[0][3] * three_by_three([
+                    [matrix[1][0], matrix[1][1], matrix[1][2]],
+                    [matrix[2][0], matrix[2][1], matrix[2][2]],
+                    [matrix[3][0], matrix[3][1], matrix[3][2]]
+                ])
+            )
+
+        if self.rows != self.columns:
+            raise ValueError("The matrix must be square to compute the determinant.")
+
+        if self.rows > 4:
+            raise ValueError("The dimension of the matrix must not be greater than 4x4.")
+
+        determinant_functions = {
+            2: two_by_two,
+            3: three_by_three,
+            4: four_by_four
+        }
+
+        return determinant_functions[self.rows](self.data)
