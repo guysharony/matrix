@@ -296,3 +296,6 @@ class Matrix:
         }
 
         return determinant_functions[self.rows](self.data)
+
+    def inverse(self) -> 'Matrix':
+        return Matrix()
