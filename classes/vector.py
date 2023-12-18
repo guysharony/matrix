@@ -21,7 +21,7 @@ class Vector:
             if not all(x.__class__ in (int, float) for x in data):
                 raise ValueError("Vector elements must be of type int or float")
 
-            self.data = data
+            self = data
             self.length = len(data)
         except Exception as err:
             print(f'error: {err}')
@@ -34,7 +34,10 @@ class Vector:
             str: A string representation of the vector.
         """
 
-        return str(self.data)
+        return str(self)
+
+    def __getitem__(self, index: int) -> float:
+        return self[index]
 
     def add(self, v: 'Vector') -> 'Vector':
         """
@@ -50,7 +53,7 @@ class Vector:
         if self.length != v.length:
             raise ValueError("Vectors must have the same length for addition.")
 
-        self.data = [a + b for a, b in zip(self.data, v.data)]
+        self.data = [a + b for a, b in zip(self, v)]
         return self
 
     def sub(self, v: 'Vector') -> 'Vector':
@@ -67,7 +70,7 @@ class Vector:
         if self.length != v.length:
             raise ValueError("Vectors must have the same length for subtraction.")
 
-        self.data = [a - b for a, b in zip(self.data, v.data)]
+        self.data = [a - b for a, b in zip(self, v)]
         return self
 
     def scl(self, k: float) -> 'Vector':
@@ -81,7 +84,7 @@ class Vector:
             Vector: This vector after scaling.
         """
 
-        self.data = [a * k for a in self.data]
+        self.data = [a * k for a in self]
         return self
 
     def dot(self, v: 'Vector') -> float:
@@ -99,7 +102,7 @@ class Vector:
             raise ValueError("Vectors must have the same length for dot product.")
 
         result = 0
-        for a, b in zip(self.data, v.data):
+        for a, b in zip(self, v):
             result += a * b
 
         return result
@@ -114,7 +117,7 @@ class Vector:
         """
 
         result = 0
-        for x in self.data:
+        for x in self:
             result += abs(x)
 
         return result
@@ -129,7 +132,7 @@ class Vector:
         """
 
         result = 0
-        for x in self.data:
+        for x in self:
             result += pow(x, 2)
 
         return result ** 0
@@ -143,4 +146,4 @@ class Vector:
             float: The L∞ norm.
         """
 
-        return max([abs(x) for x in self.data])
+        return max([abs(x) for x in self])

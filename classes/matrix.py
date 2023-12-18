@@ -24,7 +24,7 @@ class Matrix:
             if not all(all(value.__class__ in (float, int) for value in row) for row in data):
                 raise ValueError("Matrix values must be of type float or int")
 
-            self.data = data
+            self = data
             self.rows = len(data)
             self.columns = len(data[0])
         except Exception as err:
@@ -38,7 +38,10 @@ class Matrix:
             str: A string representation of the matrix.
         """
 
-        return str(self.data)
+        return str(self)
+
+    def __getitem__(self, index: int) -> list[float]:
+        return self[index]
 
     def add(self, v: 'Matrix') -> 'Matrix':
         """
@@ -54,7 +57,7 @@ class Matrix:
         if self.rows != v.rows or self.columns != v.columns:
             raise ValueError("Matrices must have the same dimensions for addition.")
 
-        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self.data, v.data)]
+        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self, v)]
         return self
 
     def sub(self, v: 'Matrix') -> 'Matrix':
@@ -71,7 +74,7 @@ class Matrix:
         if self.rows != v.rows or self.columns != v.columns:
             raise ValueError("Matrices must have the same dimensions for subtraction.")
 
-        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self.data, v.data)]
+        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self, v)]
         return self
 
     def scl(self, k: float) -> 'Matrix':
@@ -85,7 +88,7 @@ class Matrix:
             Matrix: This matrix after scaling.
         """
 
-        self.data = [[x * k for x in row] for row in self.data]
+        self.data = [[x * k for x in row] for row in self]
         return self
 
     def mul_vec(self, vec: 'Vector') -> 'Vector':
@@ -106,7 +109,7 @@ class Matrix:
 
         for n in range(self.columns):
             for m in range(self.rows):
-                result[m] += self.data[m][n] * vec.data[n]
+                result[m] += self[m][n] * vec[n]
 
         return Vector(result)
 
@@ -128,7 +131,7 @@ class Matrix:
         for n in range(self.columns):
             for m in range(self.rows):
                 for p in range(mat.columns):
-                    result[m][p] += self.data[m][n] * mat.data[n][p]
+                    result[m][p] += self[m][n] * mat[n][p]
 
         return Matrix(result)
 
@@ -145,7 +148,7 @@ class Matrix:
 
         result = 0
         for n in range(self.rows):
-            result += self.data[n][n]
+            result += self[n][n]
 
         return result
 
@@ -160,7 +163,7 @@ class Matrix:
         result = [[0] * self.rows for _ in range(self.columns)]
         for n in range(self.columns):
             for m in range(self.rows):
-                result[n][m] = self.data[m][n]
+                result[n][m] = self[m][n]
 
         return Matrix(result)
 
@@ -295,7 +298,7 @@ class Matrix:
             4: four_by_four
         }
 
-        return determinant_functions[self.rows](self.data)
+        return determinant_functions[self.rows](self)
 
     def inverse(self) -> 'Matrix':
         """
@@ -308,7 +311,7 @@ class Matrix:
         if self.rows != self.columns:
             raise ValueError("The matrix must be square to compute the determinant.")
 
-        matrix = [row[:] + [int(i == j) for j in range(self.rows)] for i, row in enumerate(self.data)]
+        matrix = [row[:] + [int(i == j) for j in range(self.rows)] for i, row in enumerate(self)]
 
         lead = 0
         for r in range(self.rows):
@@ -337,3 +340,14 @@ class Matrix:
 
             lead += 1
         return Matrix([row[self.rows:] for row in matrix])
+
+    def rank(self) -> int:
+        """
+        Computes the rank of the matrix.
+
+        Returns:
+            int: The rank of the matrix.
+        """
+
+        row_echelon = self.row_echelon()
+        return sum(1 for row in row_echelon if any(row))
