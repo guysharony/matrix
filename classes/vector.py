@@ -57,8 +57,10 @@ class Vector:
         Returns:
             Vector: This vector after addition.
         """
+        size = self.get_size()
+        v_size = v.get_size()
 
-        if self.length != v.length:
+        if size != v_size:
             raise ValueError("Vectors must have the same length for addition.")
 
         self.data = [a + b for a, b in zip(self, v)]
@@ -75,7 +77,10 @@ class Vector:
             Vector: This vector after subtraction.
         """
 
-        if self.length != v.length:
+        size = self.get_size()
+        v_size = v.get_size()
+
+        if size != v_size:
             raise ValueError("Vectors must have the same length for subtraction.")
 
         self.data = [a - b for a, b in zip(self, v)]
@@ -106,7 +111,10 @@ class Vector:
             float: The dot product value.
         """
 
-        if self.length != v.length:
+        size = self.get_size()
+        v_size = v.get_size()
+
+        if size != v_size:
             raise ValueError("Vectors must have the same length for dot product.")
 
         result = 0
