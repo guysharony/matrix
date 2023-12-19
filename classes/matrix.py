@@ -24,9 +24,7 @@ class Matrix:
             if not all(all(value.__class__ in (float, int) for value in row) for row in data):
                 raise ValueError("Matrix values must be of type float or int")
 
-            self = data
-            self.rows = len(data)
-            self.columns = len(data[0])
+            self.data = data
         except Exception as err:
             print(f'error: {err}')
 
@@ -38,10 +36,20 @@ class Matrix:
             str: A string representation of the matrix.
         """
 
-        return str(self)
+        return str(self.data)
 
     def __getitem__(self, index: int) -> list[float]:
-        return self[index]
+        return self.data[index]
+
+    def get_shape(self) -> tuple[int, int]:
+        """
+        Retrieve the shape of the matrix.
+
+        Returns:
+            tuple[int, int]: A tuple representing the shape (number of rows and columns) of the matrix.
+        """
+        data = self.data.copy()
+        return len(data), len(data[0])
 
     def add(self, v: 'Matrix') -> 'Matrix':
         """
@@ -53,8 +61,10 @@ class Matrix:
         Returns:
             Matrix: This matrix after addition.
         """
+        v_rows, v_columns = v.get_shape()
+        rows, columns = self.get_shape()
 
-        if self.rows != v.rows or self.columns != v.columns:
+        if rows != v_rows or columns != v_columns:
             raise ValueError("Matrices must have the same dimensions for addition.")
 
         self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self, v)]
@@ -70,8 +80,10 @@ class Matrix:
         Returns:
             Matrix: This matrix after subtraction.
         """
+        v_rows, v_columns = v.get_shape()
+        rows, columns = self.get_shape()
 
-        if self.rows != v.rows or self.columns != v.columns:
+        if rows != v_rows or columns != v_columns:
             raise ValueError("Matrices must have the same dimensions for subtraction.")
 
         self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self, v)]
@@ -101,14 +113,16 @@ class Matrix:
         Returns:
             Vector: A new Vector resulting from the matrix-vector multiplication.
         """
+        v_length = vec.get_size()
+        rows, columns = self.get_shape()
 
-        if self.columns != vec.length:
+        if columns != v_length:
             raise ValueError("Matrix columns must match vector length for multiplication.")
 
-        result = [0] * vec.length
+        result = [0] * v_length
 
-        for n in range(self.columns):
-            for m in range(self.rows):
+        for n in range(columns):
+            for m in range(rows):
                 result[m] += self[m][n] * vec[n]
 
         return Vector(result)
@@ -124,13 +138,16 @@ class Matrix:
             Matrix: A new Matrix resulting from the matrix multiplication.
         """
 
-        if self.columns != mat.rows:
+        m_rows, m_columns = mat.get_shape()
+        rows, columns = self.get_shape()
+
+        if columns != m_rows:
             raise ValueError("Matrix A columns must match Matrix B rows for multiplication.")
 
-        result = [[0] * mat.columns for _ in range(self.rows)]
-        for n in range(self.columns):
-            for m in range(self.rows):
-                for p in range(mat.columns):
+        result = [[0] * m_columns for _ in range(rows)]
+        for n in range(columns):
+            for m in range(rows):
+                for p in range(m_columns):
                     result[m][p] += self[m][n] * mat[n][p]
 
         return Matrix(result)
@@ -142,12 +159,13 @@ class Matrix:
         Returns:
             float: The trace value.
         """
+        rows, columns = self.get_shape()
 
-        if self.columns != self.rows:
+        if rows != columns:
             raise ValueError("The matrix must be square to compute the trace.")
 
         result = 0
-        for n in range(self.rows):
+        for n in range(rows):
             result += self[n][n]
 
         return result
@@ -159,10 +177,11 @@ class Matrix:
         Returns:
             Matrix: The transpose of the original matrix.
         """
+        rows, columns = self.get_shape()
 
-        result = [[0] * self.rows for _ in range(self.columns)]
-        for n in range(self.columns):
-            for m in range(self.rows):
+        result = [[0] * rows for _ in range(columns)]
+        for n in range(columns):
+            for m in range(rows):
                 result[n][m] = self[m][n]
 
         return Matrix(result)
@@ -176,19 +195,20 @@ class Matrix:
         """
 
         matrix = self.data.copy()
+        rows, columns = self.get_shape()
 
         lead = 0
-        for r in range(self.rows):
-            if lead >= self.columns:
+        for r in range(rows):
+            if lead >= columns:
                 break
 
             pivot = r
             while matrix[pivot][lead] == 0:
                 pivot += 1
-                if pivot == self.rows:
+                if pivot == rows:
                     pivot = r
                     lead += 1
-                    if self.columns == lead:
+                    if columns == lead:
                         return Matrix(matrix)
 
             matrix[pivot], matrix[r] = matrix[r], matrix[pivot]
@@ -197,7 +217,7 @@ class Matrix:
                 reciprocal = 1.0 / matrix[r][lead]
                 matrix[r] = [elem * reciprocal for elem in matrix[r]]
 
-            for i in range(self.rows):
+            for i in range(rows):
                 if i != r:
                     factor = matrix[i][lead]
                     matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
@@ -286,10 +306,12 @@ class Matrix:
                 ])
             )
 
-        if self.rows != self.columns:
+        rows, columns = self.get_shape()
+
+        if rows != columns:
             raise ValueError("The matrix must be square to compute the determinant.")
 
-        if self.rows > 4:
+        if rows > 4:
             raise ValueError("The dimension of the matrix must not be greater than 4x4.")
 
         determinant_functions = {
@@ -298,7 +320,7 @@ class Matrix:
             4: four_by_four
         }
 
-        return determinant_functions[self.rows](self)
+        return determinant_functions[rows](self)
 
     def inverse(self) -> 'Matrix':
         """
@@ -307,25 +329,26 @@ class Matrix:
         Returns:
             Matrix: The inverse matrix.
         """
+        rows, columns = self.get_shape()
 
-        if self.rows != self.columns:
+        if rows != columns:
             raise ValueError("The matrix must be square to compute the determinant.")
 
-        matrix = [row[:] + [int(i == j) for j in range(self.rows)] for i, row in enumerate(self)]
+        matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self)]
 
         lead = 0
-        for r in range(self.rows):
-            if lead >= self.columns:
+        for r in range(rows):
+            if lead >= columns:
                 break
 
             pivot = r
             while matrix[pivot][lead] == 0:
                 pivot += 1
-                if pivot == self.rows:
+                if pivot == rows:
                     pivot = r
                     lead += 1
-                    if self.columns == lead:
-                        return Matrix([row[self.rows:] for row in matrix])
+                    if columns == lead:
+                        return Matrix([row[rows:] for row in matrix])
 
             matrix[pivot], matrix[r] = matrix[r], matrix[pivot]
 
@@ -333,13 +356,13 @@ class Matrix:
                 reciprocal = 1.0 / matrix[r][lead]
                 matrix[r] = [elem * reciprocal for elem in matrix[r]]
 
-            for i in range(self.rows):
+            for i in range(rows):
                 if i != r:
                     factor = matrix[i][lead]
                     matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
 
             lead += 1
-        return Matrix([row[self.rows:] for row in matrix])
+        return Matrix([row[rows:] for row in matrix])
 
     def rank(self) -> int:
         """

@@ -21,8 +21,7 @@ class Vector:
             if not all(x.__class__ in (int, float) for x in data):
                 raise ValueError("Vector elements must be of type int or float")
 
-            self = data
-            self.length = len(data)
+            self.data = data
         except Exception as err:
             print(f'error: {err}')
 
@@ -34,10 +33,19 @@ class Vector:
             str: A string representation of the vector.
         """
 
-        return str(self)
+        return str(self.data)
 
     def __getitem__(self, index: int) -> float:
-        return self[index]
+        return self.data[index]
+
+    def get_size(self) -> int:
+        """
+        Retrieve the length of the vector.
+
+        Returns:
+            int: The length of the vector.
+        """
+        return len(self.data)
 
     def add(self, v: 'Vector') -> 'Vector':
         """
