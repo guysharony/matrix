@@ -15,8 +15,8 @@ def cross_product(u: Vector, v: Vector) -> Vector:
         Vector: The resulting vector from the cross product operation.
     """
 
-    if u.length != 3 or v.length != 3:
-        raise ValueError("Vectors must be 3-dimensional")
+    if u.get_size() != 3 or v.get_size() != 3:
+        raise ValueError("Vectors must be 3-dimensional.")
 
     return Vector([
         u.data[1] * v.data[2] - v.data[1] * u.data[2],
