@@ -14,7 +14,7 @@ def angle_cos(u: Vector, v: Vector) -> float:
     if all(value == 0 for value in v.data) or all(value == 0 for value in u.data):
         raise ValueError("A vector cannot be null.")
 
-    if u.length != v.length:
+    if u.get_size() != v.get_size():
         raise ValueError("Vectors must have the same size.")
 
     return round(u.dot(v) / (u.norm() * v.norm()), 8)

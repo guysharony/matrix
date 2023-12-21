@@ -151,7 +151,7 @@ class Vector:
         for x in self:
             result += pow(x, 2)
 
-        return result ** 0
+        return result ** 0.5
 
     def norm_inf(self) -> float:
         """
