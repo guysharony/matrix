@@ -22,7 +22,7 @@ def linear_combination(u: list[Vector], coefs: list[float]) -> Vector:
     if len(u) != len(coefs):
         raise ValueError("u and coefs must be of the same size")
 
-    result_vector = Vector([0.0] * u[0].length)
+    result_vector = Vector([0.0] * u[0].get_size())
     for vector, coef in zip(u, coefs):
         result_vector.add(vector.scl(coef))
 
