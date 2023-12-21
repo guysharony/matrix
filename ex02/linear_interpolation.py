@@ -10,23 +10,29 @@ def lerp(u: Union[float, Vector, Matrix], v: Union[float, Vector, Matrix], t: fl
         return round((1 - t) * u + t * v, 1)
 
     if u.__class__ == Vector and v.__class__ == Vector:
-        if u.length != v.length:
-            raise ValueError("Vectors must be of the same size")
+        u_size = u.get_size()
+        v_size = v.get_size()
+
+        if u_size != v_size:
+            raise ValueError("Vectors must be of the same size.")
 
         return Vector([
             round((1 - t) * a + t * b, 1)
-            for a, b in zip(u.data, v.data)
+            for a, b in zip(u, v)
         ])
 
     if u.__class__ == Matrix and v.__class__ == Matrix:
-        if u.rows != v.rows or u.columns != v.columns:
-            raise ValueError("Matrix must be of the same size")
+        u_rows, u_columns = u.get_shape()
+        v_rows, v_columns = v.get_shape()
+
+        if u_rows != v_rows or u_columns != v_columns:
+            raise ValueError("Matrix must be of the same size.")
 
         return Matrix([
             [
                 round((1 - t) * a + t * b, 1)
-                for a, b in zip(row_a, row_b)
-            ] for row_a, row_b in zip(u.data, v.data)
+                for a, b in zip(row_u, row_v)
+            ] for row_u, row_v in zip(u, v)
         ])
 
     return TypeError(f"Cannot compute linear interpolation of {type(u)} and {type(v)}.")
