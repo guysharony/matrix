@@ -140,6 +140,10 @@ class Matrix:
         """
         Multiplies the matrix by a vector.
 
+        Complexity:
+            Time: O(nm)
+            Space: O(n)
+
         Args:
             vec (Vector): The vector to be multiplied with the matrix.
 
@@ -147,23 +151,27 @@ class Matrix:
             Vector: A new Vector resulting from the matrix-vector multiplication.
         """
 
-        v_length = vec.get_size()
-        rows, columns = self.get_shape()
+        v_length = vec.get_size() # Space and time complexity of O(1).
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        if columns != v_length:
+        if columns != v_length: # Raise error if number of columns in the matrix is different than vector's length.
             raise ValueError("Matrix columns must match vector length for multiplication.")
 
-        result = [0] * v_length
+        result = [0] * v_length # Create a list of size n.
 
-        for n in range(columns):
-            for m in range(rows):
+        for n in range(columns): # Iterates through columns n times.
+            for m in range(rows): # Iterates through rows m times.
                 result[m] += self[m][n] * vec[n]
 
-        return Vector(result)
+        return Vector(result) # Creating a vector of size n.
 
     def mul_mat(self, mat: 'Matrix') -> 'Matrix':
         """
         Multiplies two matrices.
+
+        Complexity:
+            Time: O(nmp)
+            Space: O(mp + mn)
 
         Args:
             mat (Matrix): The matrix to be multiplied with the matrix.
@@ -172,16 +180,16 @@ class Matrix:
             Matrix: A new Matrix resulting from the matrix multiplication.
         """
 
-        m_rows, m_columns = mat.get_shape()
-        rows, columns = self.get_shape()
+        m_rows, m_columns = mat.get_shape() # Space and time complexity of O(1).
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        if columns != m_rows:
+        if columns != m_rows: # Raise error if number of columns in the first matrix is different than the number of rows in the second one.
             raise ValueError("Matrix A columns must match Matrix B rows for multiplication.")
 
-        result = [[0] * m_columns for _ in range(rows)]
-        for n in range(columns):
-            for m in range(rows):
-                for p in range(m_columns):
+        result = [[0] * m_columns for _ in range(rows)] # Creating table of shape m rows and p columns.
+        for n in range(columns): # Iterate through columns n times.
+            for m in range(rows): # Iterate through rows m times.
+                for p in range(m_columns): # Iterate through second matrix columns p times.
                     result[m][p] += self[m][n] * mat[n][p]
 
         return Matrix(result)
@@ -189,18 +197,22 @@ class Matrix:
     def trace(self) -> float:
         """
         Computes the trace of a square matrix.
-    
+
+        Complexity:
+            Time: O(n)
+            Space: O(1)
+
         Returns:
             float: The trace value.
         """
-        rows, columns = self.get_shape()
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        if rows != columns:
+        if rows != columns: # Raise error if number of rows is different than the number of columns.
             raise ValueError("The matrix must be square to compute the trace.")
 
         result = 0
-        for n in range(rows):
-            result += self[n][n]
+        for n in range(rows): # Loop through rows n times.
+            result += self.data[n][n]
 
         return result
 
