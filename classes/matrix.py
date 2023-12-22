@@ -10,19 +10,20 @@ class Matrix:
         """
         Initializes a matrix with the provided data.
 
+        Complexity:
+            Time: O(m)
+            Space: O(mn)
+
         Args:
             data (list[list[float]]): A list containing elements representing the matrix.
         """
 
         try:
-            if data.__class__ != list:
-                raise ValueError("Matrix values must be of type list of list")
+            if data.__class__ != list: # Operations have complexity of O(1)
+                raise ValueError("Matrix values must be of type list of list.")
 
-            if not all(len(row) == len(data[0]) for row in data):
+            if not all(len(row) == len(data[0]) for row in data): # Iterates through each row so time complexity of O(m)
                 raise ValueError("Matrix rows must be the same size.")
-
-            if not all(all(value.__class__ in (float, int) for value in row) for row in data):
-                raise ValueError("Matrix values must be of type float or int")
 
             self.data = data
         except Exception as err:
@@ -32,6 +33,10 @@ class Matrix:
         """
         Returns the string representation of the matrix.
 
+        Complexity:
+            Time: O(mn)
+            Space: O(mn)
+
         Returns:
             str: A string representation of the matrix.
         """
@@ -39,6 +44,19 @@ class Matrix:
         return str(self.data)
 
     def __getitem__(self, index: int) -> list[float]:
+        """
+        Retrieve an element from the data list by index.
+
+        Complexity:
+            Time: O(1)
+            Space: O(n)
+
+        Args:
+            index (int): The index of the element to retrieve.
+
+        Returns:
+            float: The element from the data list at the specified index.
+        """
         return self.data[index]
 
     def get_shape(self) -> tuple[int, int]:
