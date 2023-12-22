@@ -63,15 +63,22 @@ class Matrix:
         """
         Retrieve the shape of the matrix.
 
+        Complexity:
+            Time: O(1)
+            Space: O(1)
+
         Returns:
             tuple[int, int]: A tuple representing the shape (number of rows and columns) of the matrix.
         """
-        data = self.data.copy()
-        return len(data), len(data[0])
+        return len(self.data), len(self.data[0])
 
     def add(self, v: 'Matrix') -> 'Matrix':
         """
         Adds another matrix to this matrix.
+
+        Complexity:
+            Time: O(mn)
+            Space: O(mn)
 
         Args:
             v (Matrix): Another matrix to be added.
@@ -79,18 +86,22 @@ class Matrix:
         Returns:
             Matrix: This matrix after addition.
         """
-        v_rows, v_columns = v.get_shape()
-        rows, columns = self.get_shape()
+        v_rows, v_columns = v.get_shape() # Space and time complexity of O(1).
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        if rows != v_rows or columns != v_columns:
+        if rows != v_rows or columns != v_columns: # Raise error if matrices have different shape.
             raise ValueError("Matrices must have the same dimensions for addition.")
 
-        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self, v)]
+        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self, v)] # Loops rows m times and each column n times so complexity of O(mn).
         return self
 
     def sub(self, v: 'Matrix') -> 'Matrix':
         """
         Subtract another matrix from this matrix.
+
+        Complexity:
+            Time: O(mn)
+            Space: O(mn)
 
         Args:
             v (Matrix): Another matrix to be subtracted.
@@ -98,18 +109,22 @@ class Matrix:
         Returns:
             Matrix: This matrix after subtraction.
         """
-        v_rows, v_columns = v.get_shape()
-        rows, columns = self.get_shape()
+        v_rows, v_columns = v.get_shape() # Space and time complexity of O(1).
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        if rows != v_rows or columns != v_columns:
+        if rows != v_rows or columns != v_columns: # Raise error if matrices have different shape.
             raise ValueError("Matrices must have the same dimensions for subtraction.")
 
-        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self, v)]
+        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self, v)] # Loops rows m times and each column n times so complexity of O(mn).
         return self
 
     def scl(self, k: float) -> 'Matrix':
         """
         Scales this matrix by a factor.
+
+        Complexity:
+            Time: O(mn)
+            Space: O(mn)
 
         Args:
             k (float): The scaler.
@@ -118,7 +133,7 @@ class Matrix:
             Matrix: This matrix after scaling.
         """
 
-        self.data = [[x * k for x in row] for row in self]
+        self.data = [[x * k for x in row] for row in self] # Create a matrice of m rows and n columns so complexity of O(mn).
         return self
 
     def mul_vec(self, vec: 'Vector') -> 'Vector':
@@ -131,6 +146,7 @@ class Matrix:
         Returns:
             Vector: A new Vector resulting from the matrix-vector multiplication.
         """
+
         v_length = vec.get_size()
         rows, columns = self.get_shape()
 
