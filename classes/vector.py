@@ -142,6 +142,10 @@ class Vector:
         """
         Computes the dot product of two vectors.
 
+        Complexity:
+            Time: O(n)
+            Space: O(1)
+
         Args:
             v (Vector): The second Vector to perform the dot product.
 
@@ -149,14 +153,14 @@ class Vector:
             float: The dot product value.
         """
 
-        size = self.get_size()
-        v_size = v.get_size()
+        size = self.get_size() # Space and time complexity of O(1).
+        v_size = v.get_size() # Space and time complexity of O(1).
 
-        if size != v_size:
+        if size != v_size: # Raise error if vectors have different size.
             raise ValueError("Vectors must have the same length for dot product.")
 
         result = 0
-        for a, b in zip(self, v):
+        for a, b in zip(self, v): # Loops through vectors of same size so complexity of O(n)
             result += a * b
 
         return result
@@ -166,13 +170,17 @@ class Vector:
         The Manhattan norm (L1 norm), is a way to measure the magnitude or size of a vector in a vector space.
         It is calculated by summing the absolute values of the components of the vector.
 
+        Complexity:
+            Time: O(n)
+            Space: O(1)
+
         Returns:
             float: The L1 norm.
         """
 
         result = 0
-        for x in self:
-            result += abs(x)
+        for x in self: # Loop through vector of size n so time complexity of O(n).
+            result += abs(x) # abs() has complexity of O(1)
 
         return result
 
@@ -181,13 +189,17 @@ class Vector:
         The Euclidean norm (L2 norm), is a way to measure the magnitude or size of a vector in a vector space.
         It calculates the length of a vector using a square root of the sum of the squares of its individual components.
 
+        Complexity:
+            Time: O(n)
+            Space: O(1)
+
         Returns:
             float: The L2 norm.
         """
 
         result = 0
-        for x in self:
-            result += pow(x, 2)
+        for x in self: # Loop through vector n times so time complexity of O(n)
+            result += x * x
 
         return result ** 0.5
 
@@ -196,8 +208,13 @@ class Vector:
         The supremum norm (L∞ norm) is a way to measure the magnitude or size of a vector in a vector space.
         It calculates the maximum absolute value among the components of a vector.
 
+        Complexity:
+            Time: O(n)
+            Space: O(n)
+
         Returns:
             float: The L∞ norm.
         """
 
-        return max([abs(x) for x in self])
+        abs_list = [abs(x) for x in self] # Recreate a list with vector's abs values so complexity of O(n).
+        return max(abs_list) # max() iterate through that list to find max value so complexity of O(n).
