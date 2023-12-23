@@ -9,7 +9,7 @@ class Vector:
 
         Complexity:
             Time: O(n)
-            Space: O(n)
+            Space: O(1)
 
         Args:
             data (list[float]): A list containing elements representing the vector.

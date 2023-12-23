@@ -12,7 +12,7 @@ class Matrix:
 
         Complexity:
             Time: O(m)
-            Space: O(mn)
+            Space: O(1)
 
         Args:
             data (list[list[float]]): A list containing elements representing the matrix.
@@ -171,7 +171,7 @@ class Matrix:
 
         Complexity:
             Time: O(nmp)
-            Space: O(mp + mn)
+            Space: O(mp)
 
         Args:
             mat (Matrix): The matrix to be multiplied with the matrix.
@@ -220,21 +220,29 @@ class Matrix:
         """
         Computes the transpose of the matrix.
 
+        Complexity:
+            Time: O(mn)
+            Space: O(mn)
+
         Returns:
             Matrix: The transpose of the original matrix.
         """
-        rows, columns = self.get_shape()
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
 
-        result = [[0] * rows for _ in range(columns)]
-        for n in range(columns):
-            for m in range(rows):
+        result = [[0] * rows for _ in range(columns)] # Creating table of shape m rows and n columns.
+        for n in range(columns): # Loop through columns n times
+            for m in range(rows): # Loop through rows m times
                 result[n][m] = self[m][n]
 
-        return Matrix(result)
+        return Matrix(result) # Creating matrix of n columns and m rows
 
     def row_echelon(self) -> 'Matrix':
         """
         Compute the row echelon form of a matrix.
+
+        Complexity:
+            Time: O(n3) considering n the greater between n and m.
+            Space: O(n2) copy of the matrix.
 
         Returns:
             Matrix: The row echelon form of the matrix.
@@ -244,29 +252,29 @@ class Matrix:
         rows, columns = self.get_shape()
 
         lead = 0
-        for r in range(rows):
+        for m in range(rows):
             if lead >= columns:
                 break
 
-            pivot = r
+            pivot = m
             while matrix[pivot][lead] == 0:
                 pivot += 1
                 if pivot == rows:
-                    pivot = r
+                    pivot = m
                     lead += 1
                     if columns == lead:
                         return Matrix(matrix)
 
-            matrix[pivot], matrix[r] = matrix[r], matrix[pivot]
+            matrix[pivot], matrix[m] = matrix[m], matrix[pivot]
 
-            if matrix[r][lead] != 0:
-                reciprocal = 1.0 / matrix[r][lead]
-                matrix[r] = [elem * reciprocal for elem in matrix[r]]
+            if matrix[m][lead] != 0:
+                reciprocal = 1.0 / matrix[m][lead]
+                matrix[m] = [elem * reciprocal for elem in matrix[m]]
 
             for i in range(rows):
-                if i != r:
+                if i != m:
                     factor = matrix[i][lead]
-                    matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
+                    matrix[i] = [elem - factor * matrix[m][idx] for idx, elem in enumerate(matrix[i])]
 
             lead += 1
         return Matrix(matrix)
@@ -275,6 +283,10 @@ class Matrix:
         """
         Compute the determinant of a square matrix.
 
+        Complexity:
+            Time: O(1)
+            Space: O(1)
+
         Returns:
             float: Determinant of the square matrix.
         """
@@ -282,6 +294,10 @@ class Matrix:
         def two_by_two(matrix) -> float:
             """
             Computes determinant for a 2x2 matrix
+
+            Complexity:
+                Time: O(1)
+                Space: O(1)
 
             Args:
                 matrix (list[list[float]]): The matrix to compute the determinant for.
@@ -295,6 +311,10 @@ class Matrix:
         def three_by_three(matrix):
             """
             Computes determinant for a 3x3 matrix
+
+            Complexity:
+                Time: O(1)
+                Space: O(1)
 
             Args:
                 matrix (list[list[float]]): The matrix to compute the determinant for.
@@ -321,6 +341,10 @@ class Matrix:
         def four_by_four(matrix) -> float:
             """
             Computes determinant for a 4x4 matrix
+
+            Complexity:
+                Time: O(1)
+                Space: O(1)
 
             Args:
                 matrix (list[list[float]]): The matrix to compute the determinant for.
@@ -372,12 +396,17 @@ class Matrix:
         """
         Compute the inverse of a square matrix.
 
+        Complexity:
+            Time: O(n3)
+            Space: O(n2)
+
         Returns:
             Matrix: The inverse matrix.
         """
-        rows, columns = self.get_shape()
 
-        if rows != columns:
+        rows, columns = self.get_shape() # Space and time complexity of O(1).
+
+        if rows != columns: # Raise error if number of rows is different than the number of columns.
             raise ValueError("The matrix must be square to compute the determinant.")
 
         matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self)]
@@ -405,7 +434,9 @@ class Matrix:
             for i in range(rows):
                 if i != r:
                     factor = matrix[i][lead]
-                    matrix[i] = [elem - factor * matrix[r][idx] for idx, elem in enumerate(matrix[i])]
+                    for idx in range(rows):
+                        matrix[i][idx] = matrix[i][idx] - factor * matrix[r][idx]
+                        matrix[i][idx + rows] = matrix[i][idx + rows] - factor * matrix[r][idx + rows]
 
             lead += 1
         return Matrix([row[rows:] for row in matrix])
@@ -414,9 +445,13 @@ class Matrix:
         """
         Computes the rank of the matrix.
 
+        Complexity:
+            Time: O(n3)
+            Space: O(n2)
+
         Returns:
             int: The rank of the matrix.
         """
 
-        row_echelon = self.row_echelon()
-        return sum(1 for row in row_echelon if any(row))
+        row_echelon = self.row_echelon() 
+        return sum(1 for row in row_echelon if any(row)) # Count the number of rows that have at least one non-zero element => o(n2)
