@@ -93,7 +93,7 @@ class Vector:
         if size != v_size: # Raise error if vectors have different size.
             raise ValueError("Vectors must have the same length for addition.")
 
-        self.data = [a + b for a, b in zip(self, v)] # Loop vectors n times and creating list of n items, so time and space complexity is O(n).
+        self.data = [a + b for a, b in zip(self.data, v)] # Loop vectors n times and creating list of n items, so time and space complexity is O(n).
         return self
 
     def sub(self, v: 'Vector') -> 'Vector':
@@ -117,7 +117,7 @@ class Vector:
         if size != v_size: # Raise error if vectors have different size.
             raise ValueError("Vectors must have the same length for subtraction.")
 
-        self.data = [a - b for a, b in zip(self, v)] # Loop vectors n times and creating list of n items, so time and space complexity is O(n).
+        self.data = [a - b for a, b in zip(self.data, v)] # Loop vectors n times and creating list of n items, so time and space complexity is O(n).
         return self
 
     def scl(self, k: float) -> 'Vector':
@@ -135,7 +135,7 @@ class Vector:
             Vector: This vector after scaling.
         """
 
-        self.data = [a * k for a in self] # Loop vector n times and creating list of n items, so time and space complexity is O(n).
+        self.data = [a * k for a in self.data] # Loop vector n times and creating list of n items, so time and space complexity is O(n).
         return self
 
     def dot(self, v: 'Vector') -> float:
@@ -160,7 +160,7 @@ class Vector:
             raise ValueError("Vectors must have the same length for dot product.")
 
         result = 0
-        for a, b in zip(self, v): # Loops through vectors of same size so complexity of O(n)
+        for a, b in zip(self.data, v): # Loops through vectors of same size so complexity of O(n)
             result += a * b
 
         return result
@@ -179,7 +179,7 @@ class Vector:
         """
 
         result = 0
-        for x in self: # Loop through vector of size n so time complexity of O(n).
+        for x in self.data: # Loop through vector of size n so time complexity of O(n).
             result += abs(x) # abs() has complexity of O(1)
 
         return result
@@ -198,7 +198,7 @@ class Vector:
         """
 
         result = 0
-        for x in self: # Loop through vector n times so time complexity of O(n)
+        for x in self.data: # Loop through vector n times so time complexity of O(n)
             result += x * x
 
         return result ** 0.5
@@ -216,5 +216,5 @@ class Vector:
             float: The L∞ norm.
         """
 
-        abs_list = [abs(x) for x in self] # Recreate a list with vector's abs values so complexity of O(n).
+        abs_list = [abs(x) for x in self.data] # Recreate a list with vector's abs values so complexity of O(n).
         return max(abs_list) # max() iterate through that list to find max value so complexity of O(n).

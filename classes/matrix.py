@@ -92,7 +92,7 @@ class Matrix:
         if rows != v_rows or columns != v_columns: # Raise error if matrices have different shape.
             raise ValueError("Matrices must have the same dimensions for addition.")
 
-        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self, v)] # Loops rows m times and each column n times so complexity of O(mn).
+        self.data = [[x + y for x, y in zip(a, b)] for a, b in zip(self.data, v)] # Loops rows m times and each column n times so complexity of O(mn).
         return self
 
     def sub(self, v: 'Matrix') -> 'Matrix':
@@ -115,7 +115,7 @@ class Matrix:
         if rows != v_rows or columns != v_columns: # Raise error if matrices have different shape.
             raise ValueError("Matrices must have the same dimensions for subtraction.")
 
-        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self, v)] # Loops rows m times and each column n times so complexity of O(mn).
+        self.data = [[x - y for x, y in zip(a, b)] for a, b in zip(self.data, v)] # Loops rows m times and each column n times so complexity of O(mn).
         return self
 
     def scl(self, k: float) -> 'Matrix':
@@ -133,7 +133,7 @@ class Matrix:
             Matrix: This matrix after scaling.
         """
 
-        self.data = [[x * k for x in row] for row in self] # Create a matrice of m rows and n columns so complexity of O(mn).
+        self.data = [[x * k for x in row] for row in self.data] # Create a matrice of m rows and n columns so complexity of O(mn).
         return self
 
     def mul_vec(self, vec: 'Vector') -> 'Vector':
@@ -161,7 +161,7 @@ class Matrix:
 
         for n in range(columns): # Iterates through columns n times.
             for m in range(rows): # Iterates through rows m times.
-                result[m] += self[m][n] * vec[n]
+                result[m] += self.data[m][n] * vec[n]
 
         return Vector(result) # Creating a vector of size n.
 
@@ -190,7 +190,7 @@ class Matrix:
         for n in range(columns): # Iterate through columns n times.
             for m in range(rows): # Iterate through rows m times.
                 for p in range(m_columns): # Iterate through second matrix columns p times.
-                    result[m][p] += self[m][n] * mat[n][p]
+                    result[m][p] += self.data[m][n] * mat[n][p]
 
         return Matrix(result)
 
@@ -232,7 +232,7 @@ class Matrix:
         result = [[0] * rows for _ in range(columns)] # Creating table of shape m rows and n columns.
         for n in range(columns): # Loop through columns n times
             for m in range(rows): # Loop through rows m times
-                result[n][m] = self[m][n]
+                result[n][m] = self.data[m][n]
 
         return Matrix(result) # Creating matrix of n columns and m rows
 
@@ -390,7 +390,7 @@ class Matrix:
             4: four_by_four
         }
 
-        return determinant_functions[rows](self)
+        return determinant_functions[rows](self.data)
 
     def inverse(self) -> 'Matrix':
         """
@@ -409,7 +409,7 @@ class Matrix:
         if rows != columns: # Raise error if number of rows is different than the number of columns.
             raise ValueError("The matrix must be square to compute the determinant.")
 
-        matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self)]
+        matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self.data)]
 
         lead = 0
         for r in range(rows):
