@@ -221,8 +221,8 @@ class Matrix:
         Computes the transpose of the matrix.
 
         Complexity:
-            Time: O(mn)
-            Space: O(mn)
+            Time: O(nm)
+            Space: O(nm)
 
         Returns:
             Matrix: The transpose of the original matrix.
@@ -248,11 +248,11 @@ class Matrix:
             Matrix: The row echelon form of the matrix.
         """
 
-        matrix = self.data.copy()
-        rows, columns = self.get_shape()
+        matrix = self.data.copy() # Space complexity of O(n2) as it's a copy.
+        rows, columns = self.get_shape() # Space complexity of O(1).
 
         lead = 0
-        for m in range(rows):
+        for m in range(rows): # Loop through rows so complexity of O(n)
             if lead >= columns:
                 break
 
@@ -271,10 +271,10 @@ class Matrix:
                 reciprocal = 1.0 / matrix[m][lead]
                 matrix[m] = [elem * reciprocal for elem in matrix[m]]
 
-            for i in range(rows):
+            for i in range(rows): # Loop through rows again so complexity of O(n2).
                 if i != m:
                     factor = matrix[i][lead]
-                    matrix[i] = [elem - factor * matrix[m][idx] for idx, elem in enumerate(matrix[i])]
+                    matrix[i] = [elem - factor * matrix[m][idx] for idx, elem in enumerate(matrix[i])] # Loop through columns so complexity of O(n3).
 
             lead += 1
         return Matrix(matrix)
@@ -409,10 +409,10 @@ class Matrix:
         if rows != columns: # Raise error if number of rows is different than the number of columns.
             raise ValueError("The matrix must be square to compute the determinant.")
 
-        matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self.data)]
+        matrix = [row[:] + [int(i == j) for j in range(rows)] for i, row in enumerate(self.data)] # Creating a matrix of n rows and n + n columns so O(n2)
 
         lead = 0
-        for r in range(rows):
+        for r in range(rows): # Loop through rows n times so complexity of O(n)
             if lead >= columns:
                 break
 
@@ -431,15 +431,18 @@ class Matrix:
                 reciprocal = 1.0 / matrix[r][lead]
                 matrix[r] = [elem * reciprocal for elem in matrix[r]]
 
-            for i in range(rows):
+            for i in range(rows): # Loop through rows again so complexity of O(n2)
                 if i != r:
                     factor = matrix[i][lead]
-                    for idx in range(rows):
+                    for idx in range(rows): # Loop through rows again so complexity of O(n3)
                         matrix[i][idx] = matrix[i][idx] - factor * matrix[r][idx]
                         matrix[i][idx + rows] = matrix[i][idx + rows] - factor * matrix[r][idx + rows]
 
             lead += 1
-        return Matrix([row[rows:] for row in matrix])
+
+        matrix = [row[rows:] for row in matrix] # Keeping only the augmented part of the matrix.
+
+        return Matrix(matrix)
 
     def rank(self) -> int:
         """
