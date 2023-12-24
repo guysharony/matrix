@@ -11,7 +11,7 @@ class Matrix:
         Initializes a matrix with the provided data.
 
         Complexity:
-            Time: O(m)
+            Time: O(n)
             Space: O(1)
 
         Args:
