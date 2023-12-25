@@ -456,5 +456,5 @@ class Matrix:
             int: The rank of the matrix.
         """
 
-        row_echelon = self.row_echelon() 
+        row_echelon = self.row_echelon()
         return sum(1 for row in row_echelon if any(row)) # Count the number of rows that have at least one non-zero element => o(n2)
